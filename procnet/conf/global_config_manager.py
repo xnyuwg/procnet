@@ -20,6 +20,11 @@ class GlobalConfigManager:
         return path
 
     @classmethod
+    def get_duee_dataset_path(cls):
+        path = cls.get_dataset_path() / 'DuEE_fin_Data'
+        return path
+
+    @classmethod
     def get_transformers_cache_path(cls):
         path = cls.current_path / 'Cache' / 'Transformers'
         cls.if_not_exist_then_creat(path)
@@ -34,5 +39,11 @@ class GlobalConfigManager:
     @classmethod
     def get_result_save_path(cls):
         path = cls.current_path / 'Result'
+        cls.if_not_exist_then_creat(path)
+        return path
+
+    @classmethod
+    def get_pseudo_Doc2EDAG_path(cls):
+        path = cls.get_dataset_path() / 'Pseudo_Doc2EDAG'
         cls.if_not_exist_then_creat(path)
         return path

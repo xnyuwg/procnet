@@ -2,14 +2,16 @@ import logging
 from typing import List, Dict
 from procnet.data_processor.basic_processor import BasicProcessor
 from procnet.conf.global_config_manager import GlobalConfigManager
-from procnet.data_example.DocEEexample import DocEEDocumentExample, DocEEEntity, DocEELabel
+from procnet.data_example.DocEEexample import DocEEDocumentExample, DocEEEntity, DocEELabel, PseudoDocEELabel
 from procnet.utils.util_data import UtilData
 
 
 class DocEEProcessor(BasicProcessor):
-    def __init__(self):
+    def __init__(self, read_pseudo_dataset=False):
         super().__init__()
         self.data_path = GlobalConfigManager.get_dataset_path()
+        if read_pseudo_dataset:
+            self.data_path = GlobalConfigManager.get_pseudo_Doc2EDAG_path()
         logging.debug("Path: {}".format(self.data_path))
 
         self.train_path = self.data_path / "train.json"
@@ -30,6 +32,10 @@ class DocEEProcessor(BasicProcessor):
         self.SCHEMA = DocEELabel.EVENT_SCHEMA
         self.SCHEMA_KEY_ENG_CHN = DocEELabel.KEY_ENG_CHN
         self.SCHEMA_KEY_CHN_ENG = DocEELabel.KEY_CHN_ENG
+        if read_pseudo_dataset:
+            self.SCHEMA = PseudoDocEELabel.EVENT_SCHEMA
+            self.SCHEMA_KEY_ENG_CHN = PseudoDocEELabel.KEY_ENG_CHN
+            self.SCHEMA_KEY_CHN_ENG = PseudoDocEELabel.KEY_CHN_ENG
 
     def parse_json_one(self, json) -> DocEEDocumentExample:
         doc_id: str = json[0]

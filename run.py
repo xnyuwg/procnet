@@ -2,6 +2,7 @@ import importlib
 import torch
 import logging
 import argparse
+from procnet.utils.util_string import UtilString
 from procnet.data_processor.DocEE_processor import DocEEProcessor
 from procnet.data_preparer.DocEE_preparer import DocEEPreparer
 from procnet.model.DocEE_proxy_node_model import DocEEProxyNodeModel
@@ -18,7 +19,9 @@ def parse_args(in_args=None):
     arg_parser.add_argument("--run_save_name", type=str, required=True, help="The save name of this run")
     arg_parser.add_argument("--batch_size", type=int, default=32, help="batch_size")
     arg_parser.add_argument("--epoch", type=int, default=50, help="Training epochs")
+    arg_parser.add_argument("--read_pseudo", type=str, default=False, required=False, help="If read pseudo data")
     args = arg_parser.parse_args(args=in_args)
+    args.read_pseudo = UtilString.str_to_bool(args.read_pseudo)
     return args
 
 
@@ -38,7 +41,7 @@ def get_config(args) -> DocEEConfig:
 def run(args):
     config = get_config(args)
     logging.info('save_name = {}'.format(config.model_save_name))
-    dee_pro = DocEEProcessor()
+    dee_pro = DocEEProcessor(args.read_pseudo)
     dee_pre = DocEEPreparer(config=config, processor=dee_pro)
     pre_data = dee_pre.get_loader_for_flattened_fragment_before_event()
     train_dataset, dev_dataset, test_dataset, train_loader, dev_loader, test_loader = pre_data
